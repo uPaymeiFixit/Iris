@@ -4,3 +4,5 @@ certificates/**
 **/node_modules/**
 **/bower_components/**
 modules/pages/resources/styles/dist/**
+
+modules/credentials.js
