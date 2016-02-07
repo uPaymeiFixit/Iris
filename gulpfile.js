@@ -1,7 +1,7 @@
 var gulp = require('gulp');
 var exit = require('gulp-exit');
 var chalk = require('chalk');
-var server;
+var main;
 var bower;
 var jshint;
 var mocha;
@@ -107,11 +107,11 @@ gulp.task('node-server', function () {
     if (!gls) {
         gls = require('gulp-live-server');
     }
-    if (server) {
-        server.stop();
+    if (main) {
+        main.stop();
     }
-    server = gls.new('server.js', {env: {NODE_ENV: mode}});
-    server.start();
+    main = gls.new('main.js', {env: {NODE_ENV: mode}});
+    main.start();
 });
 
 gulp.task('reload-pages', function () {
@@ -123,8 +123,8 @@ gulp.task('reload-pages', function () {
 
 gulp.task('live-reload', function (file) {
     // console.log('live-reloading ' + file);
-    if (server) {
-        server.notify.apply(server, [file]);
+    if (main) {
+        main.notify.apply(main, [file]);
         // console.log('live-reloading');
     }
     // console.log('live-reload done');
@@ -140,7 +140,7 @@ gulp.task('watch', function () {
     gulp.watch('modules/pages/resources/styles/*.scss', ['sass', 'live-reload']);
     gulp.watch('modules/pages/*.html', ['reload-pages']);
     // gulp.watch('modules/pages/parts/*/*.html', ['node-server']);
-    gulp.watch('server.js', ['node-server']);
+    gulp.watch('main.js', ['node-server']);
     gulp.watch('modules/*.js', ['node-server']);
 });
 
