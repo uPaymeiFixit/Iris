@@ -13,10 +13,12 @@ module.exports = {
         return this;
     },
     start: function () {
+        console.log('Starting the main server...');
         this.serial.start();
         this.plugins.start();
     },
     stop: function () {
+        console.log('Stopping the main server...');
         this.plugins.stop();
         this.serial.stop();
     }
