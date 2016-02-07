@@ -1,11 +1,11 @@
 var SerialPort = require('serialport').SerialPort;
 var serial_port;
-var baudrate = 9600;
+var baudrate = 115200;
 var leds;
 
 module.exports = {
     init: function () {
-        serial_port = new SerialPort('/dev/tty.usbmodem1471', {baudrate: baudrate}, false);
+        serial_port = new SerialPort('/dev/tty.usbmodem1D141', {baudrate: baudrate}, false);
         return this;
     },
     start: function (callback) {

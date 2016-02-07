@@ -17,7 +17,7 @@ module.exports = {
         var NUM_LEDS = 17;
         irisAPI.leds = new Uint8Array(NUM_LEDS * 3);
 
-        this.reloadPlugins(function () {
+        this.reloadPluginsSync(function () {
             if (callback) {
                 callback();
             }
@@ -40,6 +40,7 @@ module.exports = {
         clearInterval(this.pluginClock);
     },
     reloadPlugins: function (callback) {
+        module.exports.activatedPlugins = []
         console.log('Loading Plugins');
         var pluginsToLoad = 0;
         var pluginsLoaded = 0;
@@ -89,6 +90,43 @@ module.exports = {
                 });
             }
         });
+    },
+    reloadPluginsSync: function (callback) {
+        module.exports.activatedPlugins = [];
+        console.log('Loading Plugins');
+        function loadPlugins (folder) {
+            if (folder === undefined) {
+                folder = module.exports.pluginsFolder;
+            }
+            // TODO: if there are no plugins to load, then 'it never finishes' loading them
+            var files = fs.readdirSync(folder);
+            for (var file in files) {
+                var stats = fs.statSync(folder + files[file]);
+                if (stats.isFile()) {
+                    // TODO: make this more efficient. Maybe just catching an error on a bad require would do it
+                    if (files[file].split('.').reverse()[0].toLowerCase() === 'js') {
+                        var plugin = require(folder + files[file])(irisAPI);
+                        module.exports.loadedPlugins[plugin.name] = plugin;
+                        console.log('  ' + plugin.name);
+                    }
+                } else if (stats.isDirectory()) {
+                    loadPlugins(folder + files[file] + '/');
+                }
+            }
+        }
+
+        if (!fs.accessSync(module.exports.pluginsFolder)) {
+            loadPlugins();
+        } else {
+            console.log('Could\'t find plugins folder');
+            fs.mkdirpSync(module.exports.pluginsFolder);
+            console.log('Created plugins folder at ' + module.exports.pluginsFolder);
+            loadPlugins();
+        }
+
+        if (callback) {
+            callback();
+        }
     },
     activatePlugin: function (plugin) {
         if (this.activatedPlugins.indexOf(plugin) === -1) {
