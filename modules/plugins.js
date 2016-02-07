@@ -1,5 +1,4 @@
-var fs = require('fs');
-var mkdirp = require('mkdirp');
+var fs = require('fs.extra');
 var os = require('os');
 
 var irisAPI = require('./plugin_api');
@@ -64,7 +63,7 @@ module.exports = {
                 loadPlugins();
             } else {
                 console.log('Could\'t find plugins folder');
-                mkdirp(module.exports.pluginsFolder, function () {
+                fs.mkdirp(module.exports.pluginsFolder, function () {
                     console.log('Created plugins folder at ' + module.exports.pluginsFolder);
                     loadPlugins();
                 });
