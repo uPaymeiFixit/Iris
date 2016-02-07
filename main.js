@@ -14,8 +14,10 @@ module.exports = {
     },
     start: function () {
         this.serial.start();
+        this.plugins.start();
     },
     stop: function () {
+        this.plugins.stop();
         this.serial.stop();
     }
 };

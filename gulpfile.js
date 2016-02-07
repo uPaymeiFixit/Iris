@@ -8,7 +8,6 @@ var mocha;
 var sass;
 var autoprefixer;
 var concat;
-var gls;
 var request;
 var mode = 'production';
 
@@ -104,17 +103,11 @@ gulp.task('scripts', function () {
 });
 
 gulp.task('node-server', function () {
-    // if (!gls) {
-    //     gls = require('gulp-live-server');
-    // }
-    // if (main) {
-    //     main.stop();
-    // }
-    // main = gls.new('main.js', {env: {NODE_ENV: mode}});
-    // main.init();
-    // main.start();
     if (main) {
         main.stop();
+        main = undefined;
+        // release old main script
+        delete require.cache[require.resolve('./main')];
     }
     main = require('./main');
     main.init();
