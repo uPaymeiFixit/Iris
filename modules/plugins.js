@@ -3,6 +3,7 @@ var mkdirp = require('mkdirp');
 var os = require('os');
 
 var irisAPI = require('./plugin_api');
+var serial;
 
 module.exports = {
     pluginsFolder: os.homedir() + '/Library/Application Support/Iris/plugins/',
@@ -11,7 +12,9 @@ module.exports = {
     pluginClock: undefined,
     refreshRate: 1000 / 30,
 
-    init: function () {
+    init: function (_serial) {
+        serial = _serial;
+
         this.reloadPlugins();
 
         return this;
@@ -24,6 +27,7 @@ module.exports = {
                     module.exports.loadedPlugins[module.exports.activatedPlugins[i]].update();
                 }
             }
+            serial.write(irisAPI.leds);
         }, this.refreshRate);
     },
     stop: function () {
