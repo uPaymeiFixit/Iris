@@ -11,10 +11,17 @@ module.exports = {
     pluginClock: undefined,
     refreshRate: 1000 / 30,
 
-    init: function (_serial) {
+    init: function (_serial, callback) {
         serial = _serial;
+        // irisAPI.leds = serial.getLEDs();
+        var NUM_LEDS = 17;
+        irisAPI.leds = new Uint8Array(NUM_LEDS * 3);
 
-        this.reloadPlugins();
+        this.reloadPlugins(function () {
+            if (callback) {
+                callback();
+            }
+        });
 
         return this;
     },
@@ -32,13 +39,17 @@ module.exports = {
     stop: function () {
         clearInterval(this.pluginClock);
     },
-    reloadPlugins: function () {
+    reloadPlugins: function (callback) {
         console.log('Loading Plugins');
+        var pluginsToLoad = 0;
+        var pluginsLoaded = 0;
         function loadPlugins (folder) {
             if (folder === undefined) {
                 folder = module.exports.pluginsFolder;
             }
+            // TODO: if there are no plugins to load, then 'it never finishes' loading them
             fs.readdir(folder, function (err, files) {
+                pluginsToLoad += files.length;
                 for (var file in files) {
                     (function (_file) {
                         fs.stat(folder + files[_file], function (err, stats) {
@@ -47,9 +58,18 @@ module.exports = {
                                 if (files[_file].split('.').reverse()[0].toLowerCase() === 'js') {
                                     var plugin = require(folder + files[_file])(irisAPI);
                                     module.exports.loadedPlugins[plugin.name] = plugin;
+                                    pluginsLoaded++;
                                     console.log('  ' + plugin.name);
+                                    if (pluginsLoaded >= pluginsToLoad) {
+                                        if (callback) {
+                                            callback();
+                                        }
+                                    }
+                                } else {
+                                    pluginsToLoad--;
                                 }
                             } else if (stats.isDirectory()) {
+                                pluginsToLoad--;
                                 loadPlugins(folder + files[_file] + '/');
                             }
                         });

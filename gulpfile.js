@@ -111,7 +111,6 @@ gulp.task('node-server', function () {
     }
     main = require('./main');
     main.init();
-    main.start();
 });
 
 gulp.task('reload-pages', function () {
