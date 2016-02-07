@@ -104,13 +104,20 @@ gulp.task('scripts', function () {
 });
 
 gulp.task('node-server', function () {
-    if (!gls) {
-        gls = require('gulp-live-server');
-    }
+    // if (!gls) {
+    //     gls = require('gulp-live-server');
+    // }
+    // if (main) {
+    //     main.stop();
+    // }
+    // main = gls.new('main.js', {env: {NODE_ENV: mode}});
+    // main.init();
+    // main.start();
     if (main) {
         main.stop();
     }
-    main = gls.new('main.js', {env: {NODE_ENV: mode}});
+    main = require('./main');
+    main.init();
     main.start();
 });
 
