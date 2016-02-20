@@ -12,10 +12,16 @@ module.exports = {
     refreshRate: 1000 / 30,
 
     init: function (_serial, callback) {
+        console.log('Initializing plugins…');
         serial = _serial;
         // irisAPI.leds = serial.getLEDs();
         var NUM_LEDS = 17;
-        irisAPI.leds = new Uint8Array(NUM_LEDS * 3);
+        // irisAPI.leds = new Uint8Array(NUM_LEDS * 3);
+        irisAPI.leds = [];
+        irisAPI.leds[NUM_LEDS - 1] = undefined;
+        for (var i = 0; i < irisAPI.leds.length; i++) {
+            irisAPI.leds[i] = [0, 0, 0];
+        }
 
         this.reloadPluginsSync(function () {
             if (callback) {
@@ -25,23 +31,31 @@ module.exports = {
 
         return this;
     },
-    start: function () {
-        console.log('starting plugins');
+    start: function (callback) {
+        console.log('Starting plugins…');
         this.pluginClock = setInterval(function () {
             for (var i in module.exports.activatedPlugins) {
                 if (module.exports.loadedPlugins[module.exports.activatedPlugins[i]].update) {
-                    module.exports.loadedPlugins[module.exports.activatedPlugins[i]].update();
+                    // TODO: set timeMultiplier to a percentage of the time elapsed compared to 1000/30ms
+                    var timeMultiplier = module.exports.refreshRate / (1000 / 30);
+                    module.exports.loadedPlugins[module.exports.activatedPlugins[i]].update(timeMultiplier);
                 }
             }
             serial.write(irisAPI.leds);
         }, this.refreshRate);
+        if (callback) {
+            callback();
+        }
     },
-    stop: function () {
+    stop: function (callback) {
         clearInterval(this.pluginClock);
+        if (callback) {
+            callback();
+        }
     },
     reloadPlugins: function (callback) {
-        module.exports.activatedPlugins = []
-        console.log('Loading Plugins');
+        module.exports.activatedPlugins = [];
+        console.log('Loading plugins…');
         var pluginsToLoad = 0;
         var pluginsLoaded = 0;
         function loadPlugins (folder) {
@@ -93,7 +107,7 @@ module.exports = {
     },
     reloadPluginsSync: function (callback) {
         module.exports.activatedPlugins = [];
-        console.log('Loading Plugins');
+        console.log('Loading plugins…');
         function loadPlugins (folder) {
             if (folder === undefined) {
                 folder = module.exports.pluginsFolder;
@@ -130,7 +144,14 @@ module.exports = {
     },
     activatePlugin: function (plugin) {
         if (this.activatedPlugins.indexOf(plugin) === -1) {
-            this.activatedPlugins.push(plugin);
+            if (this.loadedPlugins[plugin] !== undefined) {
+                this.activatedPlugins.push(plugin);
+                console.log('Loaded ' + plugin + ' plugin');
+            } else {
+                console.log('Plugin not found');
+            }
+        } else {
+            console.log('Plugin already activated');
         }
     },
     deactivatePlugin: function (plugin) {

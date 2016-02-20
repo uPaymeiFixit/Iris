@@ -5,7 +5,7 @@ module.exports = {
     plugins: require('./modules/plugins'),
     devAPI: undefined,
 
-    init: function () {
+    init: function (callback) {
         async.parallel([
             function (callback) {
                 module.exports.serial.init(callback);
@@ -14,7 +14,10 @@ module.exports = {
                 module.exports.plugins.init(module.exports.serial, callback);
             }
         ], function () {
-            module.exports.start();
+            if (callback) {
+                callback();
+            }
+            // module.exports.start();
         });
         if (process.env.NODE_ENV === 'development') {
 
@@ -22,15 +25,29 @@ module.exports = {
 
         return this;
     },
-    start: function () {
-        console.log('Starting the main server...');
-        this.serial.start();
-        this.plugins.start();
-        this.plugins.activatePlugin('Pulse');
+    start: function (callback) {
+        console.log('Starting the main server…');
+        async.parallel([
+            function (callback) {
+                module.exports.serial.start(callback);
+            },
+            function (callback) {
+                module.exports.plugins.start(callback);
+            }
+        ], function () {
+            module.exports.plugins.activatePlugin('Rainbow Loop');
+            if (callback) {
+                callback();
+            }
+            // module.exports.start();
+        });
     },
-    stop: function () {
-        console.log('Stopping the main server...');
-        this.plugins.stop();
-        this.serial.stop();
+    stop: function (callback) {
+        console.log('Stopping the main server…');
+        module.exports.plugins.stop();
+        module.exports.serial.stop();
+        if (callback) {
+            callback();
+        }
     }
 };

@@ -4,16 +4,20 @@ var baudrate = 115200;
 var leds;
 
 module.exports = {
-    init: function () {
-        serial_port = new SerialPort('/dev/tty.usbmodem1D141', {baudrate: baudrate}, false);
+    init: function (callback) {
+        console.log('Initializing the serial server…');
+        serial_port = new SerialPort('/dev/tty.usbmodem1491', {baudrate: baudrate}, false);
+        if (callback) {
+            callback();
+        }
         return this;
     },
     start: function (callback) {
         // We must wait for this event to fire before interacting with the device
-        console.log('Starting the serial server...');
+        console.log('Starting the serial server…');
         serial_port.open(function () {
 
-            console.log('Connected!');
+            console.log('Serial connected…');
 
             serial_port.on('data', function (data) {
                 console.log('data received: ' + data);
@@ -45,29 +49,27 @@ module.exports = {
             }
         });
     },
-    stop: function () {
-        console.log('Stopping the serial server...');
+    stop: function (callback) {
+        console.log('Stopping the serial server…');
         serial_port.close(function () {
             console.log('Serial port has been closed.');
+            if (callback) {
+                callback();
+            }
         });
     },
 
     write: function (leds) {
         if (serial_port.isOpen()) {
-            // var new_leds = [];
-            // for (var i = 0; i < leds.length; i++) {
-            //     // console.log('Sending: (' + leds[i].r + ', ' + leds[i].g + ', ' + leds[i].b + ')');
-            //     // new_leds[i * 3    ] = leds[i][0];
-            //     // new_leds[i * 3 + 1] = leds[i][1];
-            //     // new_leds[i * 3 + 2] = leds[i][2];
-            //     serial_port.write(new Buffer(leds[i]));
-            //     // serial_port.write(leds[i][1]);
-            //     // serial_port.write(leds[i][2]);
-            //
-            // }
-            const buf = new Buffer(leds.buffer);
+            var LEDbuffer = new Uint8Array(leds.length * 3);
+            for (var i = 0; i < leds.length; i++) {
+                LEDbuffer[(i * 3)] = leds[i][0];
+                LEDbuffer[(i * 3) + 1] = leds[i][1];
+                LEDbuffer[(i * 3) + 2] = leds[i][2];
+            }
+
+            var buf = new Buffer(LEDbuffer.buffer);
             serial_port.write(buf);
-            // console.log(buf);
             return true;
         } else {
             return false;

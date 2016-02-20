@@ -110,7 +110,9 @@ gulp.task('node-server', function () {
         delete require.cache[require.resolve('./main')];
     }
     main = require('./main');
-    main.init();
+    main.init(function () {
+        main.start();
+    });
 });
 
 gulp.task('reload-pages', function () {
@@ -147,4 +149,4 @@ gulp.task('default', ['test', 'lint', 'sass', 'scripts']);
 gulp.task('build', ['sass', 'scripts']);
 gulp.task('run', ['node-server']);
 gulp.task('deploy', ['sass', 'scripts', 'run']);
-gulp.task('dev', ['set-dev', 'sass', 'scripts', 'run', 'watch']);
+gulp.task('dev', ['set-dev', 'sass', 'run', 'watch']);
