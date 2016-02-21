@@ -14,9 +14,7 @@ module.exports = {
     init: function (_serial, callback) {
         console.log('Initializing plugins…');
         serial = _serial;
-        // irisAPI.leds = serial.getLEDs();
         var NUM_LEDS = 17;
-        // irisAPI.leds = new Uint8Array(NUM_LEDS * 3);
         irisAPI.leds = [];
         irisAPI.leds[NUM_LEDS - 1] = undefined;
         for (var i = 0; i < irisAPI.leds.length; i++) {

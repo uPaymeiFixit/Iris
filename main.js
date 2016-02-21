@@ -40,7 +40,6 @@ module.exports = {
             if (callback) {
                 callback();
             }
-            // module.exports.start();
         });
     },
     stop: function (exitCode, callback) {

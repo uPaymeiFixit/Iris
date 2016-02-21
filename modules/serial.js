@@ -1,7 +1,7 @@
 var SerialPort = require('serialport').SerialPort;
 var serial_port;
 var baudrate = 115200;
-var leds;
+var LEDbuffer;
 
 module.exports = {
     init: function (callback) {
@@ -19,19 +19,17 @@ module.exports = {
 
             console.log('Serial connected…');
 
-            serial_port.on('data', function (data) {
-                console.log('data received: ' + data);
-            });
+            // serial_port.on('data', function (data) {
+            //     console.log('data received: ' + data);
+            // });
 
             // /////////////////// THIS GOES SOMEWHERE ELSE //////////////////
             // Initialize the 2d leds array
             var NUM_LEDS = 17;
-            leds = new Uint8Array(NUM_LEDS * 3);
+            LEDbuffer = new Uint8Array(NUM_LEDS * 3);
             for (var i = 0; i < NUM_LEDS * 3; i++) {
-                leds[i] = 0;
+                LEDbuffer[i] = 0;
             }
-
-            var t = 255;
 
             if (callback) {
                 callback();
@@ -49,8 +47,7 @@ module.exports = {
     },
 
     write: function (leds) {
-        if (serial_port.isOpen()) {
-            var LEDbuffer = new Uint8Array(leds.length * 3);
+        if (serial_port && serial_port.isOpen()) {
             for (var i = 0; i < leds.length; i++) {
                 LEDbuffer[(i * 3)] = leds[i][0];
                 LEDbuffer[(i * 3) + 1] = leds[i][1];
@@ -63,8 +60,5 @@ module.exports = {
         } else {
             return false;
         }
-    },
-    getLEDs: function () {
-        return leds;
     }
 };
