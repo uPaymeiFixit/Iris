@@ -52,6 +52,7 @@ module.exports = {
         }
     },
     reloadPlugins: function (callback) {
+        var activatedPlugins = module.exports.activatedPlugins;
         module.exports.activatedPlugins = [];
         console.log('Loading plugins…');
         var pluginsToLoad = 0;
@@ -74,6 +75,8 @@ module.exports = {
                                     pluginsLoaded++;
                                     console.log('  ' + plugin.name);
                                     if (pluginsLoaded >= pluginsToLoad) {
+                                        module.exports.activatedPlugins = activatedPlugins;
+
                                         if (callback) {
                                             callback();
                                         }

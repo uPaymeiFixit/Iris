@@ -3,6 +3,15 @@ var serial_port;
 var baudrate = 115200;
 var LEDbuffer;
 
+var constrain = function (x, min, max) {
+    if (x > max) {
+        x = max;
+    } else if (x < min) {
+        x = min;
+    }
+    return x;
+};
+
 module.exports = {
     init: function (callback) {
         console.log('Initializing the serial server…');
@@ -49,9 +58,9 @@ module.exports = {
     write: function (leds) {
         if (serial_port && serial_port.isOpen()) {
             for (var i = 0; i < leds.length; i++) {
-                LEDbuffer[(i * 3)] = leds[i][0];
-                LEDbuffer[(i * 3) + 1] = leds[i][1];
-                LEDbuffer[(i * 3) + 2] = leds[i][2];
+                LEDbuffer[(i * 3)] = Math.round(constrain(leds[i][0], 0, 255));
+                LEDbuffer[(i * 3) + 1] = Math.round(constrain(leds[i][1], 0, 255));
+                LEDbuffer[(i * 3) + 2] = Math.round(constrain(leds[i][2], 0, 255));
             }
 
             var buf = new Buffer(LEDbuffer.buffer);
