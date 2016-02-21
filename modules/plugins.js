@@ -31,6 +31,13 @@ module.exports = {
     },
     start: function (callback) {
         console.log('Starting plugins…');
+
+        for (var i in module.exports.activatedPlugins) {
+            if (module.exports.loadedPlugins[module.exports.activatedPlugins[i]].start) {
+                module.exports.loadedPlugins[module.exports.activatedPlugins[i]].start();
+            }
+        }
+
         this.pluginClock = setInterval(function () {
             for (var i in module.exports.activatedPlugins) {
                 if (module.exports.loadedPlugins[module.exports.activatedPlugins[i]].update) {
