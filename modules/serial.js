@@ -29,20 +29,9 @@ module.exports = {
             leds = new Uint8Array(NUM_LEDS * 3);
             for (var i = 0; i < NUM_LEDS * 3; i++) {
                 leds[i] = 0;
-                // leds[i] = {r:0,g:0,b:0};
             }
-            // var leds = new Uint8ClampedArray(NUM_LEDS);
 
             var t = 255;
-            // setInterval(function () {
-            //     for (i = 0; i <= NUM_LEDS - 1; i++) {
-            //         t = (t == 255) ? 0 : 255;
-            //         leds[i*3] = t;
-            //         leds[i*3+1] = t;
-            //         leds[i*3+2] = t;
-            //     }
-            //     module.exports.write(leds);
-            // }, 1000 / 30);
 
             if (callback) {
                 callback();

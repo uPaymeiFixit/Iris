@@ -36,18 +36,23 @@ module.exports = {
             }
         ], function () {
             module.exports.plugins.activatePlugin('Rainbow Loop');
+            module.exports.plugins.activatePlugin('Breath');
             if (callback) {
                 callback();
             }
             // module.exports.start();
         });
     },
-    stop: function (callback) {
+    stop: function (exitCode, callback) {
         console.log('Stopping the main server…');
         module.exports.plugins.stop();
         module.exports.serial.stop();
         if (callback) {
             callback();
+        }
+        if (exitCode !== undefined) {
+            console.log('exitting: ' + exitCode);
+            process.exit(exitCode);
         }
     }
 };

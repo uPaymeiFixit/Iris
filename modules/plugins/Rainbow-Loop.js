@@ -9,7 +9,7 @@ module.exports = function (iris) {
                 if (hue > 1) {
                     hue -= 1;
                 }
-                var color = iris.HSVtoRGB(hue, 1, 1);
+                var color = iris.convert.HSVtoRGB(hue, 1, 1);
                 iris.leds[i] = color;
             }
             value += 0.01 * timeMultiplier;

@@ -7,7 +7,7 @@ module.exports = function (iris) {
             value += 0.0001;
 
             for (var i = 0; i < iris.leds.length; i++) {
-                var color = iris.HSVtoRGB(value % 1, 1, 1);
+                var color = iris.convert.HSVtoRGB(value % 1, 1, 1);
                 iris.leds[i] = color;
             }
         }

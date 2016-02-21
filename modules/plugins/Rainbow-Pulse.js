@@ -9,13 +9,13 @@ var vertTranslate = (RGBrange / 2) + minRGB;
 
 module.exports = function (iris) {
     return {
-        name: 'Pulse',
+        name: 'Rainbow Pulse',
         update: function (timeMultiplier) {
             if (lightness >= Math.PI * 2) {
                 lightness = 0;
                 hue = Math.random();
             }
-            var color = iris.HSVtoRGB(hue, 1, (Math.cos(lightness) / -2 * RGBrange + vertTranslate) / 255);
+            var color = iris.convert.HSVtoRGB(hue, 1, (Math.cos(lightness) / -2 * RGBrange + vertTranslate) / 255);
             for (var i = 0; i < iris.leds.length; i++) {
                 iris.leds[i] = color;
             }
