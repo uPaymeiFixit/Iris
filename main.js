@@ -17,7 +17,6 @@ module.exports = {
             if (callback) {
                 callback();
             }
-            // module.exports.start();
         });
         if (process.env.NODE_ENV === 'development') {
 

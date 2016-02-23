@@ -1,6 +1,5 @@
 var electron = require('electron');
 
-var mainWindow;
 var appIcon;
 var main;
 
@@ -15,7 +14,8 @@ module.exports = {
     },
     start: function (callback) {
         module.exports.app.on('ready', function () {
-            appIcon = new electron.Tray(process.cwd() + '/modules/resources/images/icon.gif');
+            var image = electron.nativeImage.createFromPath(process.cwd() + '/modules/resources/images/icon.png');
+            appIcon = new electron.Tray(image);
 
             var menu = electron.Menu.buildFromTemplate([
                 {label: 'Plugins', submenu: [
@@ -41,8 +41,16 @@ module.exports = {
                 ]},
                 {type: 'separator'},
                 {label: 'Settings', submenu: [
-                    {label: 'Set LED Count', click: function () {}},
-                    {label: 'Set Baud Rate', click: function () {}}
+                    {label: 'Set LED Count', click: function () {
+                        module.exports.alert('dialog', 'Set LED Count', 'Set LED Count', function (response) {
+                            console.log('New LED count: ' + response);
+                        });
+                    }},
+                    {label: 'Set Baud Rate', click: function () {
+                        module.exports.alert('notification', 'Set Baud Rate', 'Set Baud Rate', function (response) {
+                            console.log('New LED count: ' + response);
+                        });
+                    }}
                 ]},
                 {type: 'separator'},
                 {label: 'Quit', click: function () {main.stop(0);}}
@@ -58,6 +66,54 @@ module.exports = {
     stop: function (callback) {
         if (callback) {
             callback();
+        }
+    },
+    alert: function (type, title, message, callback) {
+        var response = '';
+
+        switch (type) {
+            case 'dialog':
+                var win = new electron.BrowserWindow({
+                    width: 500,
+                    height: 300,
+                    show: false,
+                    title: title,
+                    icon: electron.nativeImage.createFromPath(process.cwd() + '/modules/resources/images/icon.png')
+                });
+                win.on('closed', function () {
+                    if (callback) {
+                        callback(response);
+                    }
+                });
+                // win.loadURL('https://github.com');
+                win.show();
+                break;
+            case 'notification':
+                var win = new electron.BrowserWindow({
+                    width: 0,
+                    height: 0,
+                    show: false
+                });
+                // win.loadURL('https://github.com');
+                win.show();
+
+                var notification = new electron.Notification(title, {
+                    body: message
+                });
+
+                notification.onclick = function () {
+                    response = 'notification clicked';
+                    if (callback) {
+                        callback(response);
+                    }
+                };
+                notification.onclose = function () {
+                    response = 'notification closed';
+                    if (callback) {
+                        callback(response);
+                    }
+                };
+                break;
         }
     }
 };
