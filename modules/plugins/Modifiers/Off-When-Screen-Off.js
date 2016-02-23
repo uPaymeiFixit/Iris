@@ -1,6 +1,6 @@
 module.exports = function (iris) {
     return {
-        name: 'Off When Screen Off',
+        name: 'Modifiers/Off When Screen Off',
         update: function () {
             if (false) {
                 for (var i = 0; i < iris.leds.length; i++) {

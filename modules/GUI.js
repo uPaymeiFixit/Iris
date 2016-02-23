@@ -1,6 +1,8 @@
 var electron = require('electron');
+var notifier = require('node-notifier');
 
-var appIcon;
+var tray;
+var trayMenu;
 var main;
 
 module.exports = {
@@ -14,10 +16,12 @@ module.exports = {
     },
     start: function (callback) {
         module.exports.app.on('ready', function () {
-            var image = electron.nativeImage.createFromPath(process.cwd() + '/modules/resources/images/icon.png');
-            appIcon = new electron.Tray(image);
+            module.exports.app.dock.hide();
 
-            var menu = electron.Menu.buildFromTemplate([
+            var image = electron.nativeImage.createFromPath(process.cwd() + '/modules/resources/images/icon.png');
+            tray = new electron.Tray(image);
+
+            trayMenu = electron.Menu.buildFromTemplate([
                 {label: 'Plugins', submenu: [
                     {label: 'Open Plugins Folder…', click: function () {
                         var command = '';
@@ -42,12 +46,12 @@ module.exports = {
                 {type: 'separator'},
                 {label: 'Settings', submenu: [
                     {label: 'Set LED Count', click: function () {
-                        module.exports.alert('dialog', 'Set LED Count', 'Set LED Count', function (response) {
+                        module.exports.dialog('dialog', 'Set LED Count', 'Set LED Count', function (response) {
                             console.log('New LED count: ' + response);
                         });
                     }},
                     {label: 'Set Baud Rate', click: function () {
-                        module.exports.alert('notification', 'Set Baud Rate', 'Set Baud Rate', function (response) {
+                        module.exports.dialog('notification', 'Set Baud Rate', 'Set Baud Rate', function (response) {
                             console.log('New LED count: ' + response);
                         });
                     }}
@@ -56,7 +60,7 @@ module.exports = {
                 {label: 'Quit', click: function () {main.stop(0);}}
             ]);
 
-            appIcon.setContextMenu(menu);
+            tray.setContextMenu(trayMenu);
         });
 
         if (callback) {
@@ -68,7 +72,7 @@ module.exports = {
             callback();
         }
     },
-    alert: function (type, title, message, callback) {
+    dialog: function (type, title, message, callback) {
         var response = '';
 
         switch (type) {
@@ -85,35 +89,35 @@ module.exports = {
                         callback(response);
                     }
                 });
-                // win.loadURL('https://github.com');
+                win.loadURL('file://' + process.cwd() + '/modules/resources/pages/dialog/dialog.html');
                 win.show();
                 break;
             case 'notification':
-                var win = new electron.BrowserWindow({
-                    width: 0,
-                    height: 0,
-                    show: false
+                notifier.notify({
+                    title: title,
+                    message: message,
+                    icon: process.cwd() + '/modules/resources/images/icon.png'
+                }, function (err, res) {
+                    response = res;
+                    if (callback) {
+                        callback(res);
+                    }
                 });
-                // win.loadURL('https://github.com');
-                win.show();
-
-                var notification = new electron.Notification(title, {
-                    body: message
-                });
-
-                notification.onclick = function () {
-                    response = 'notification clicked';
+                break;
+            case 'alert':
+                electron.dialog.showMessageBox({type: 'error', buttons: ['OK'], title: title, message: message}, function () {
+                    response = 'error seen';
                     if (callback) {
                         callback(response);
                     }
-                };
-                notification.onclose = function () {
-                    response = 'notification closed';
-                    if (callback) {
-                        callback(response);
-                    }
-                };
+                });
                 break;
         }
+    },
+    addPlugin: function (name) {
+        trayMenu[0].push(name);
+    },
+    clearPlugins: function () {
+        tray.
     }
 };

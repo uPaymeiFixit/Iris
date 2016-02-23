@@ -2,7 +2,7 @@ var disabled = [{start: 3, stop: 6}, 9];
 
 module.exports = function (iris) {
     return {
-        name: 'Disable LEDs',
+        name: 'Modifiers/Disable LEDs',
         update: function () {
             for (var i = 0; i < disabled.length; i++) {
                 if (disabled[i].start) {

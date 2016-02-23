@@ -8,7 +8,7 @@ var vertTranslate = (range / 2) + min;
 
 module.exports = function (iris) {
     return {
-        name: 'Breath',
+        name: 'Modifiers/Breath',
         update: function (timeMultiplier) {
             if (value >= Math.PI * 2) {
                 value = 0;

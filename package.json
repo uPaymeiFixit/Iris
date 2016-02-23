@@ -39,6 +39,7 @@
     "gulp-live-server": "0.0.29",
     "gulp-mocha": "^2.2.0",
     "gulp-sass": "^2.2.0",
+    "node-notifier": "4.5.0",
     "serialport": "^2.0.6"
   }
 }
