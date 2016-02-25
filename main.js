@@ -1,17 +1,20 @@
 var async = require('async');
+var storage = require('electron-json-storage');
 
 module.exports = {
     serial: require('./modules/serial'),
     plugins: require('./modules/plugins'),
+    GUI: undefined,
     devAPI: undefined,
 
-    init: function (callback) {
+    init: function (GUI, callback) {
+        module.exports.GUI = GUI;
         async.parallel([
             function (callback) {
                 module.exports.serial.init(callback);
             },
             function (callback) {
-                module.exports.plugins.init(module.exports.serial, callback);
+                module.exports.plugins.init(module.exports.serial, module.exports.GUI, callback);
             }
         ], function () {
             if (callback) {
@@ -34,8 +37,12 @@ module.exports = {
                 module.exports.plugins.start(callback);
             }
         ], function () {
-            module.exports.plugins.activatePlugin('Rainbow Loop');
-            module.exports.plugins.activatePlugin('Breath');
+            storage.get('activatedPlugins').then(function (activatedPlugins) {
+                for (var i in activatedPlugins) {
+                    module.exports.plugins.activatePlugin(activatedPlugins[i]);
+                    module.exports.GUI.checkPlugin(activatedPlugins[i]);
+                }
+            });
             if (callback) {
                 callback();
             }
@@ -45,6 +52,9 @@ module.exports = {
         console.log('Stopping the main server…');
         module.exports.plugins.stop();
         module.exports.serial.stop();
+
+        storage.set('activatedPlugins', module.exports.plugins.activatedPlugins);
+
         if (callback) {
             callback();
         }

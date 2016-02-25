@@ -3,20 +3,22 @@ var GUI = require('./modules/GUI');
 
 module.exports = {
     init: function (callback) {
-        main.init();
-        GUI.init(main);
-
-        if (callback) {
-            callback();
-        }
+        GUI.init(main, function () {
+            main.init(GUI, function () {
+                if (callback) {
+                    callback();
+                }
+            });
+        });
     },
     start: function (callback) {
-        main.start();
-        GUI.start();
-
-        if (callback) {
-            callback();
-        }
+        GUI.start(function () {
+            main.start(function () {
+                if (callback) {
+                    callback();
+                }
+            });
+        });
     },
     stop: function (callback) {
         main.stop();

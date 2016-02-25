@@ -3,6 +3,7 @@ var os = require('os');
 
 var irisAPI = require('./plugin_api');
 var serial;
+var GUI;
 
 module.exports = {
     pluginsFolder: os.homedir() + '/Library/Application Support/Iris/plugins/',
@@ -11,9 +12,10 @@ module.exports = {
     pluginClock: undefined,
     refreshRate: 1000 / 30,
 
-    init: function (_serial, callback) {
+    init: function (_serial, _gui, callback) {
         console.log('Initializing plugins…');
         serial = _serial;
+        GUI = _gui;
         var NUM_LEDS = 17;
         irisAPI.leds = [];
         irisAPI.leds[NUM_LEDS - 1] = undefined;
@@ -21,22 +23,17 @@ module.exports = {
             irisAPI.leds[i] = [0, 0, 0];
         }
 
-        this.reloadPluginsSync(function () {
-            if (callback) {
-                callback();
-            }
-        });
-
+        if (callback) {
+            callback();
+        }
         return this;
     },
     start: function (callback) {
         console.log('Starting plugins…');
 
-        for (var i in module.exports.activatedPlugins) {
-            if (module.exports.loadedPlugins[module.exports.activatedPlugins[i]].start) {
-                module.exports.loadedPlugins[module.exports.activatedPlugins[i]].start();
-            }
-        }
+        this.reloadPluginsSync(function () {
+
+        });
 
         this.pluginClock = setInterval(function () {
             for (var i in module.exports.activatedPlugins) {
@@ -79,6 +76,7 @@ module.exports = {
                                 if (files[_file].split('.').reverse()[0].toLowerCase() === 'js') {
                                     var plugin = require(folder + files[_file])(irisAPI);
                                     module.exports.loadedPlugins[plugin.name] = plugin;
+                                    GUI.addPlugin(plugin.name);
                                     pluginsLoaded++;
                                     console.log('  ' + plugin.name);
                                     if (pluginsLoaded >= pluginsToLoad) {
@@ -129,6 +127,7 @@ module.exports = {
                     if (files[file].split('.').reverse()[0].toLowerCase() === 'js') {
                         var plugin = require(folder + files[file])(irisAPI);
                         module.exports.loadedPlugins[plugin.name] = plugin;
+                        GUI.addPlugin(plugin.name);
                         console.log('  ' + plugin.name);
                     }
                 } else if (stats.isDirectory()) {
@@ -154,6 +153,9 @@ module.exports = {
         if (this.activatedPlugins.indexOf(plugin) === -1) {
             if (this.loadedPlugins[plugin] !== undefined) {
                 this.activatedPlugins.push(plugin);
+                if (module.exports.loadedPlugins[plugin].start) {
+                    module.exports.loadedPlugins[plugin].start();
+                }
                 console.log('Loaded ' + plugin + ' plugin');
             } else {
                 console.log('Plugin not found');
@@ -165,6 +167,16 @@ module.exports = {
     deactivatePlugin: function (plugin) {
         if (this.activatedPlugins.indexOf(plugin) !== -1) {
             this.activatedPlugins.splice(this.activatedPlugins.indexOf(plugin), 1);
+        }
+    },
+    deactivatePlugins: function () {
+        this.activatedPlugins.splice(0, this.activatedPlugins.length - 1);
+    },
+    deactivateBasePlugins: function () {
+        for (var i in this.activatedPlugins) {
+            if (this.activatedPlugins[i].split('/').length > 1) {
+                this.activatedPlugins.splice(i, 1);
+            }
         }
     }
 };

@@ -1,15 +1,51 @@
 var electron = require('electron');
+var os = require('os');
 var notifier = require('node-notifier');
 
-var tray;
-var trayMenu;
 var main;
+var tray;
+var trayMenu = [
+    {label: 'Plugins', submenu: [
+        {label: 'Open Plugins Folder…', click: function () {
+            switch (process.platform) {
+                case 'darwin':
+                    require('child_process').spawn('open', [os.homedir() + '/Library/Application\ Support/Iris/plugins']);
+                    break;
+                case 'linux':
+                    require('child_process').spawn('open', [os.homedir() + '/Application\ Data/Iris/plugins']);
+                    break;
+                case 'win32':
+                    require('child_process').spawn('explorer', [os.homedir() + '/"Application Data"/Local/Iris/plugins']);
+                    break;
+            }
+        }},
+        {label: 'Reload Plugins', click: function () {main.plugins.reloadPlugins();}},
+        {type: 'separator'},
+        {label: 'Modifiers', submenu: []}
+    ]},
+    {type: 'separator'},
+    {label: 'Settings', submenu: [
+        {label: 'Set LED Count', click: function () {
+            module.exports.dialog('dialog', 'Set LED Count', 'Set LED Count', function (response) {
+                console.log('New LED count: ' + response);
+            });
+        }},
+        {label: 'Set Baud Rate', click: function () {
+            module.exports.dialog('notification', 'Set Baud Rate', 'Set Baud Rate', function (response) {
+                console.log('New LED count: ' + response);
+            });
+        }}
+    ]},
+    {type: 'separator'},
+    {label: 'Quit', click: function () {main.stop(0);}}
+];
 
 module.exports = {
     app: electron.app,
 
     init: function (_main,  callback) {
         main = _main;
+
         if (callback) {
             callback();
         }
@@ -18,54 +54,20 @@ module.exports = {
         module.exports.app.on('ready', function () {
             module.exports.app.dock.hide();
 
-            var image = electron.nativeImage.createFromPath(process.cwd() + '/modules/resources/images/icon.png');
+            var image = electron.nativeImage.createFromPath(process.cwd() + '/modules/resources/images/IconTemplate.png');
             tray = new electron.Tray(image);
 
-            trayMenu = electron.Menu.buildFromTemplate([
-                {label: 'Plugins', submenu: [
-                    {label: 'Open Plugins Folder…', click: function () {
-                        var command = '';
+            var test = electron.Menu.buildFromTemplate(trayMenu);
 
-                        switch (process.platform) {
-                            case 'darwin':
-                                command = 'open ~/Library/Application\ Support/Iris/plugins';
-                                break;
-                            case 'linux':
-                                command = 'open ~/Application\ Data/Iris/plugins';
-                                break;
-                            case 'win32':
-                                command = 'open ~/"Application Data"/Local/Iris/plugins';
-                                break;
-                        }
+            tray.setContextMenu(test);
 
-                        require('child_process').exec(command);
-                    }},
-                    {label: 'Reload Plugins', click: function () {main.plugins.reloadPlugins();}},
-                    {type: 'separator'}
-                ]},
-                {type: 'separator'},
-                {label: 'Settings', submenu: [
-                    {label: 'Set LED Count', click: function () {
-                        module.exports.dialog('dialog', 'Set LED Count', 'Set LED Count', function (response) {
-                            console.log('New LED count: ' + response);
-                        });
-                    }},
-                    {label: 'Set Baud Rate', click: function () {
-                        module.exports.dialog('notification', 'Set Baud Rate', 'Set Baud Rate', function (response) {
-                            console.log('New LED count: ' + response);
-                        });
-                    }}
-                ]},
-                {type: 'separator'},
-                {label: 'Quit', click: function () {main.stop(0);}}
-            ]);
+            console.log(tray);
 
-            tray.setContextMenu(trayMenu);
         });
-
         if (callback) {
             callback();
         }
+
     },
     stop: function (callback) {
         if (callback) {
@@ -115,9 +117,61 @@ module.exports = {
         }
     },
     addPlugin: function (name) {
-        trayMenu[0].push(name);
+        var splitName = name.split('/');
+
+        if (splitName.length > 1) {
+            // TODO: push to the right submenu
+            // var folder = splitName[0];
+
+            trayMenu[0].submenu[3].submenu.push({
+                label: splitName[splitName.length - 1],
+                type: 'checkbox',
+                click: function () {
+                    main.plugins.activatePlugin(name);
+                }
+            });
+            // tray.menu.items[0].submenu[3].submenu.append(new electron.MenuItem({
+            //     label: splitName[splitName.length - 1],
+            //     type: 'checkbox',
+            //     click: function () {
+            //         main.plugins.activatePlugin(name);
+            //     }
+            // }));
+        } else {
+            trayMenu[0].submenu.push({
+                label: name,
+                type: 'radio',
+                click: function () {
+                    main.plugins.deactivateBasePlugins();
+                    main.plugins.activatePlugin(name);
+                }
+            });
+            // tray.menu.items[0].submenu.push({
+            //     label: name,
+            //     type: 'radio',
+            //     click: function () {
+            //         main.plugins.deactivateBasePlugins();
+            //         main.plugins.activatePlugin(name);
+            //     }
+            // });
+        }
     },
     clearPlugins: function () {
-        tray.
+        trayMenu[0].submenu[3].submenu = [];
+        trayMenu[0].submenu.splice(4, trayMenu[0].submenu.length - 4);
+    },
+    checkPlugin: function (name, submenu) {
+        if (!submenu) {
+            submenu = trayMenu[0].submenu;
+        }
+
+        for (var i = 0; i < submenu.length; i++) {
+            if (submenu[i].label === name) {
+                submenu[i].checked = true;
+                return;
+            } else if (submenu[i].submenu) {
+                module.exports.checkPlugin(name, submenu[i].submenu);
+            }
+        }
     }
 };
