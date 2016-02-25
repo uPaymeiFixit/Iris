@@ -126,8 +126,12 @@ module.exports = {
             trayMenu[0].submenu[3].submenu.push({
                 label: splitName[splitName.length - 1],
                 type: 'checkbox',
-                click: function () {
-                    main.plugins.activatePlugin(name);
+                click: function (menuItem) {
+                    if (menuItem.checked) {
+                        main.plugins.activatePlugin(name);
+                    } else {
+                        main.plugins.deactivatePlugin(name);
+                    }
                 }
             });
             // tray.menu.items[0].submenu[3].submenu.append(new electron.MenuItem({

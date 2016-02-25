@@ -161,13 +161,16 @@ module.exports = {
                 console.log('Plugin not found');
             }
         } else {
-            console.log('Plugin already activated');
+            console.log('Plugin already loaded');
         }
     },
     deactivatePlugin: function (plugin) {
         if (this.activatedPlugins.indexOf(plugin) !== -1) {
             this.activatedPlugins.splice(this.activatedPlugins.indexOf(plugin), 1);
+            console.log('Unloaded ' + plugin + ' plugin');
+            return;
         }
+        console.log('Plugin not loaded');
     },
     deactivatePlugins: function () {
         this.activatedPlugins.splice(0, this.activatedPlugins.length - 1);
@@ -178,5 +181,6 @@ module.exports = {
                 this.activatedPlugins.splice(i, 1);
             }
         }
+        console.log('Unloaded all base plugins');
     }
 };
