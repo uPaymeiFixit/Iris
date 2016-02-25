@@ -1,3 +1,5 @@
+var storage = require('electron-json-storage');
+
 module.exports = {
     leds: [],
     convert: {
@@ -106,6 +108,28 @@ module.exports = {
                 break;
             }
             return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+        }
+    },
+    storage: {
+        get: function (plug, key, callback) {
+            storage.get(plug + '.' + key, function (data) {
+                callback(data);
+            });
+        },
+        set: function (plug, key, val, callback) {
+            storage.set(plug + '.' + key, val, function (error) {
+                callback(error);
+            });
+        },
+        has: function (plug, key, callback) {
+            storage.has(plug + '.' + key, function (error, data) {
+                callback(error, data);
+            });
+        },
+        remove: function (plug, key, callback) {
+            storage.remove(plug + '.' + key, function (error) {
+                callback(error);
+            });
         }
     }
 };
