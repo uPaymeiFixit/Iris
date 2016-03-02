@@ -9,6 +9,7 @@ var sass;
 var autoprefixer;
 var concat;
 var request;
+var spawn = require('child_process').spawn;
 var mode = 'production';
 
 gulp.task('set-dev', function () {
@@ -130,6 +131,17 @@ gulp.task('live-reload', function (file) {
     }
     // console.log('live-reload done');
     // return gulp.src(file).pipe(exit());
+});
+
+var electron;
+gulp.task('electron-start', function () {
+    electron = spawn('electron', ['./electron_start.js']);
+    electron.stderr.on('data', function (data) {
+        console.log('stderr: ' + data);
+    });
+    electron.stdout.on('data', function (data) {
+        console.log('stdout: ' + data);
+    });
 });
 
 gulp.task('watch', function () {
