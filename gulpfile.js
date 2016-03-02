@@ -135,12 +135,30 @@ gulp.task('live-reload', function (file) {
 
 var electron;
 gulp.task('electron-start', function () {
+    if (electron) {
+        electron.stdin.pause();
+        electron.kill();
+    }
     electron = spawn('electron', ['./electron_start.js']);
     electron.stderr.on('data', function (data) {
-        console.log('stderr: ' + data);
+        var date = new Date();
+        var hours = date.getHours();
+        hours = hours < 10 ? '0' + hours : hours;
+        var minutes = date.getMinutes();
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        var seconds = date.getSeconds();
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+        process.stdout.write('[' + chalk.gray(hours + ':' + minutes + ':' + seconds) + '] ' + chalk.green('Electron') + ' ' + chalk.red(data));
     });
     electron.stdout.on('data', function (data) {
-        console.log('stdout: ' + data);
+        var date = new Date();
+        var hours = date.getHours();
+        hours = hours < 10 ? '0' + hours : hours;
+        var minutes = date.getMinutes();
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        var seconds = date.getSeconds();
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+        process.stdout.write('[' + chalk.gray(hours + ':' + minutes + ':' + seconds) + '] ' + chalk.green('Electron') + ' ' + data);
     });
 });
 

@@ -57,12 +57,7 @@ module.exports = {
             var image = electron.nativeImage.createFromPath(process.cwd() + '/modules/resources/images/IconTemplate.png');
             tray = new electron.Tray(image);
 
-            var test = electron.Menu.buildFromTemplate(trayMenu);
-
-            tray.setContextMenu(test);
-
-            console.log(tray);
-
+            tray.setContextMenu(electron.Menu.buildFromTemplate(trayMenu));
         });
         if (callback) {
             callback();
@@ -134,13 +129,6 @@ module.exports = {
                     }
                 }
             });
-            // tray.menu.items[0].submenu[3].submenu.append(new electron.MenuItem({
-            //     label: splitName[splitName.length - 1],
-            //     type: 'checkbox',
-            //     click: function () {
-            //         main.plugins.activatePlugin(name);
-            //     }
-            // }));
         } else {
             trayMenu[0].submenu.push({
                 label: name,
@@ -150,31 +138,45 @@ module.exports = {
                     main.plugins.activatePlugin(name);
                 }
             });
-            // tray.menu.items[0].submenu.push({
-            //     label: name,
-            //     type: 'radio',
-            //     click: function () {
-            //         main.plugins.deactivateBasePlugins();
-            //         main.plugins.activatePlugin(name);
-            //     }
-            // });
+        }
+
+        if (tray) {
+            tray.setContextMenu(electron.Menu.buildFromTemplate(trayMenu));
         }
     },
     clearPlugins: function () {
         trayMenu[0].submenu[3].submenu = [];
         trayMenu[0].submenu.splice(4, trayMenu[0].submenu.length - 4);
+
+        if (tray) {
+            tray.setContextMenu(electron.Menu.buildFromTemplate(trayMenu));
+        }
     },
     checkPlugin: function (name, submenu) {
         if (!submenu) {
             submenu = trayMenu[0].submenu;
         }
 
-        for (var i = 0; i < submenu.length; i++) {
-            if (submenu[i].label === name) {
-                submenu[i].checked = true;
-                return;
-            } else if (submenu[i].submenu) {
-                module.exports.checkPlugin(name, submenu[i].submenu);
+        var splitName = name.split('/');
+        if (splitName.length > 1) {
+            var submenuName = splitName[0];
+
+            for (var i = 0; i < submenu.length; i++) {
+                if (submenu[i].submenu && submenu[i].label === submenuName) {
+                    splitName.splice(0, 1);
+                    module.exports.checkPlugin(splitName.join('/'), submenu[i].submenu);
+                }
+            }
+        } else {
+            for (var i = 0; i < submenu.length; i++) {
+                if (submenu[i].label === name) {
+                    submenu[i].checked = true;
+
+                    if (tray) {
+                        tray.setContextMenu(electron.Menu.buildFromTemplate(trayMenu));
+                    }
+                    return;
+                }
             }
         }
     }
