@@ -112,7 +112,7 @@ module.exports = {
         });
     },
     reloadPluginsSync: function (callback) {
-        module.exports.activatedPlugins = [];
+        module.exports.deactivatePlugins();
         console.log('Loading plugins…');
         function loadPlugins (folder) {
             if (folder === undefined) {

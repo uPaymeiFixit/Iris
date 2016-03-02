@@ -19,7 +19,12 @@ var trayMenu = [
                     break;
             }
         }},
-        {label: 'Reload Plugins', click: function () {main.plugins.reloadPlugins();}},
+        {label: 'Reload Plugins', click: function () {
+            module.exports.clearPlugins();
+            main.plugins.reloadPluginsSync(function () {
+
+            });
+        }},
         {type: 'separator'},
         {label: 'Modifiers', submenu: []}
     ]},
