@@ -1,7 +1,7 @@
 module.exports = function (iris) {
     return {
         name: 'Kick Detect Color',
-        colorMode: 'HSV',
+        colorSpace: 'HSV',
         start: function () {
             iris.BeatDetect.setSensitivity(250);
         },

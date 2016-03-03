@@ -58,9 +58,9 @@ module.exports = {
                     // TODO: set timeMultiplier to a percentage of the time elapsed compared to 1000/30ms
                     var timeMultiplier = module.exports.refreshRate / module.exports.baseRefreshRate;
                     var leds;
-                    if (module.exports.loadedPlugins[module.exports.activatedPlugins[i]].colorMode === 'RGB' || module.exports.loadedPlugins[module.exports.activatedPlugins[i]].colorMode === undefined) {
+                    if (module.exports.loadedPlugins[module.exports.activatedPlugins[i]].colorSpace === 'RGB' || module.exports.loadedPlugins[module.exports.activatedPlugins[i]].colorSpace === undefined) {
                         leds = RGBtoHSV(module.exports.loadedPlugins[module.exports.activatedPlugins[i]].update(HSVtoRGB(irisAPI.leds), timeMultiplier));
-                    } else if (module.exports.loadedPlugins[module.exports.activatedPlugins[i]].colorMode === 'HSV') {
+                    } else if (module.exports.loadedPlugins[module.exports.activatedPlugins[i]].colorSpace === 'HSV') {
                         leds = module.exports.loadedPlugins[module.exports.activatedPlugins[i]].update(irisAPI.leds, timeMultiplier);
                     }
                     if (leds) {

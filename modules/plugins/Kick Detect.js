@@ -3,7 +3,7 @@ var brightness = 0;
 module.exports = function (iris) {
     return {
         name: 'Kick Detect',
-        colorMode: 'HSV',
+        colorSpace: 'HSV',
         update: function (leds) {
             if (iris.BeatDetect.isKick()) {
                 brightness = 1;

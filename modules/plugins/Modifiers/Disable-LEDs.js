@@ -3,7 +3,7 @@ var disabled = [{start: 3, stop: 6}, 9];
 module.exports = function () {
     return {
         name: 'Modifiers/Disable LEDs',
-        colorMode: 'HSV',
+        colorSpace: 'HSV',
         update: function (leds) {
             for (var i = 0; i < disabled.length; i++) {
                 if (disabled[i].start) {

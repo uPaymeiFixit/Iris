@@ -9,7 +9,7 @@ var vertTranslate = (range / 2) + min;
 module.exports = function () {
     return {
         name: 'Modifiers/Breath',
-        colorMode: 'HSV',
+        colorSpace: 'HSV',
         update: function (leds, timeMultiplier) {
             if (value >= Math.PI * 2) {
                 value = 0;

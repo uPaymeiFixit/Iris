@@ -3,6 +3,7 @@ var value = 0;
 module.exports = function () {
     return {
         name: 'Rainbow',
+        colorSpace: 'HSV',
         update: function (leds) {
             value += 0.0001;
 

@@ -3,7 +3,7 @@ var value = 0;
 module.exports = function () {
     return {
         name: 'Rainbow Loop',
-        colorMode: 'HSV',
+        colorSpace: 'HSV',
         update: function (leds, timeMultiplier) {
             for (var i = 0; i < leds.length; i++) {
                 var hue = value + (i / leds.length);

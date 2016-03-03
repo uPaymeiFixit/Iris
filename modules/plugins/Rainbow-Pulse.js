@@ -10,6 +10,7 @@ var vertTranslate = (RGBrange / 2) + minRGB;
 module.exports = function () {
     return {
         name: 'Rainbow Pulse',
+        colorSpace: 'HSV',
         update: function (leds, timeMultiplier) {
             if (lightness >= Math.PI * 2) {
                 lightness = 0;
