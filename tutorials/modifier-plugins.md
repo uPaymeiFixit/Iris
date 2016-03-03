@@ -6,7 +6,7 @@ A simple modifier plugin to disable the first LED
 module.exports = function () {
   return {
     name: 'Modifiers/Disable LEDs',
-    colorMode: 'HSV',
+    colorSpace: 'HSV',
     update: function (leds) {
       leds[0][2] = 0;
 
