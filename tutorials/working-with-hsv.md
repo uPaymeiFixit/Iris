@@ -9,6 +9,7 @@ HSV is an acronym for hue, saturation, value (or brightness)
 Many color pickers will use a HSV cylinder to represent the colors space.
 
 ![HSV color picker](/resources/images/hsv-color-picker.png)
+
 In this picker, the hue is the angle around the circle, the saturation is the length of the line from the center of the circle to the picker, and the value or brightness is set using the slider at the bottom.
 
 Here is a render of the HSV cylinder
