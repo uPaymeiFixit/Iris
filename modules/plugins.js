@@ -5,12 +5,29 @@ var irisAPI = require('./plugin_api');
 var serial;
 var GUI;
 
+var RGBtoHSV = function (leds) {
+    var converted = [];
+    for (var i = 0; i < leds.length; i++) {
+        converted.push(irisAPI.convert.RGBtoHSV(leds[i][0], leds[i][1], leds[i][2]));
+    }
+    return converted;
+};
+
+var HSVtoRGB = function (leds) {
+    var converted = [];
+    for (var i = 0; i < leds.length; i++) {
+        converted.push(irisAPI.convert.HSVtoRGB(leds[i][0], leds[i][1], leds[i][2]));
+    }
+    return converted;
+};
+
 module.exports = {
     pluginsFolder: os.homedir() + '/Library/Application Support/Iris/plugins/',
     loadedPlugins: [],
     activatedPlugins: [],
     pluginClock: undefined,
     refreshRate: 1000 / 30,
+    baseRefreshRate: 1000 / 30,
 
     init: function (_serial, _gui, callback) {
         console.log('Initializing plugins…');
@@ -39,8 +56,16 @@ module.exports = {
             for (var i in module.exports.activatedPlugins) {
                 if (module.exports.loadedPlugins[module.exports.activatedPlugins[i]].update) {
                     // TODO: set timeMultiplier to a percentage of the time elapsed compared to 1000/30ms
-                    var timeMultiplier = module.exports.refreshRate / (1000 / 30);
-                    module.exports.loadedPlugins[module.exports.activatedPlugins[i]].update(timeMultiplier);
+                    var timeMultiplier = module.exports.refreshRate / module.exports.baseRefreshRate;
+                    var leds;
+                    if (module.exports.loadedPlugins[module.exports.activatedPlugins[i]].colorMode === 'RGB' || module.exports.loadedPlugins[module.exports.activatedPlugins[i]].colorMode === undefined) {
+                        leds = RGBtoHSV(module.exports.loadedPlugins[module.exports.activatedPlugins[i]].update(HSVtoRGB(irisAPI.leds), timeMultiplier));
+                    } else if (module.exports.loadedPlugins[module.exports.activatedPlugins[i]].colorMode === 'HSV') {
+                        leds = module.exports.loadedPlugins[module.exports.activatedPlugins[i]].update(irisAPI.leds, timeMultiplier);
+                    }
+                    if (leds) {
+                        irisAPI.leds = leds;
+                    }
                 }
             }
             serial.write(irisAPI.leds);

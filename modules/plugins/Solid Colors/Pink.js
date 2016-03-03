@@ -1,11 +1,10 @@
-module.exports = function (iris) {
+module.exports = function () {
     return {
-        name: 'Pink',
-        update: function () {
-            for (var i = 0; i < iris.leds.length; i++) {
-                iris.leds[i][0] = 255;
-                iris.leds[i][1] = 20;
-                iris.leds[i][2] = 147;
+        name: 'Purple',
+        colorMode: 'HSV',
+        update: function (leds) {
+            for (var i = 0; i < leds.length; i++) {
+                leds[i] = [0.7528, 1, 0.62];
             }
         }
     };

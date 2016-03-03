@@ -1,10 +1,13 @@
-module.exports = function (iris) {
+module.exports = function () {
     return {
         name: 'Modifiers/Remove Red',
-        update: function () {
-            for (var i = 0; i < iris.leds.length; i++) {
-                iris.leds[i][0] = 0;
+        colorMode: 'RGB',
+        update: function (leds) {
+            for (var i = 0; i < leds.length; i++) {
+                leds[i][0] = 0;
             }
+
+            return leds;
         }
     };
 };

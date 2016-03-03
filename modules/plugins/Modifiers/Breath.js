@@ -6,21 +6,23 @@ var range = (max - min);
 
 var vertTranslate = (range / 2) + min;
 
-module.exports = function (iris) {
+module.exports = function () {
     return {
         name: 'Modifiers/Breath',
-        update: function (timeMultiplier) {
+        colorMode: 'HSV',
+        update: function (leds, timeMultiplier) {
             if (value >= Math.PI * 2) {
                 value = 0;
             }
 
             var lightness = Math.cos(value) / -2 * range + vertTranslate;
-            for (var i = 0; i < iris.leds.length; i++) {
-                var hsv = iris.convert.RGBtoHSV(iris.leds[i][0], iris.leds[i][1], iris.leds[i][2]);
-                iris.leds[i] = iris.convert.HSVtoRGB(hsv[0], hsv[1], hsv[2] * lightness);
+            for (var i = 0; i < leds.length; i++) {
+                leds[i][2] *= lightness;
             }
 
             value += 0.025 * timeMultiplier;
+
+            return leds;
         }
     };
 };

@@ -1,4 +1,5 @@
 var SerialPort = require('serialport').SerialPort;
+var pluginAPI = require('./plugin_api');
 var serial_port;
 var baudrate = 115200;
 var LEDbuffer;
@@ -26,7 +27,14 @@ module.exports = {
         console.log('Starting the serial server…');
         serial_port.open(function () {
 
-            console.log('Serial connected…');
+            if (serial_port.isOpen()) {
+                console.log('Serial connected…');
+                serial_port.on('error', function (error) {
+                    console.error(error);
+                });
+            } else {
+                console.error('Failed to connect…');
+            }
 
             // serial_port.on('data', function (data) {
             //     console.log('data received: ' + data);
@@ -58,9 +66,10 @@ module.exports = {
     write: function (leds) {
         if (serial_port && serial_port.isOpen()) {
             for (var i = 0; i < leds.length; i++) {
-                LEDbuffer[(i * 3)] = Math.round(constrain(leds[i][0], 0, 255));
-                LEDbuffer[(i * 3) + 1] = Math.round(constrain(leds[i][1], 0, 255));
-                LEDbuffer[(i * 3) + 2] = Math.round(constrain(leds[i][2], 0, 255));
+                var led = pluginAPI.convert.HSVtoRGB(constrain(leds[i][0], 0, 1), constrain(leds[i][1], 0, 1), constrain(leds[i][2], 0, 1));
+                LEDbuffer[(i * 3)] = Math.round(led[0]);
+                LEDbuffer[(i * 3) + 1] = Math.round(led[1]);
+                LEDbuffer[(i * 3) + 2] = Math.round(led[2]);
             }
 
             var buf = new Buffer(LEDbuffer.buffer);

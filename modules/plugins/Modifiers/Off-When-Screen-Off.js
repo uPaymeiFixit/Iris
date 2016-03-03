@@ -1,12 +1,15 @@
-module.exports = function (iris) {
+module.exports = function () {
     return {
         name: 'Modifiers/Off When Screen Off',
-        update: function () {
+        colorMode: 'HSV',
+        update: function (leds) {
             if (false) {
-                for (var i = 0; i < iris.leds.length; i++) {
-                    iris.leds[i] = [0, 0, 0];
+                for (var i = 0; i < leds.length; i++) {
+                    leds[i][2] = 0;
                 }
             }
+
+            return leds;
         }
     };
 };

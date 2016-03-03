@@ -1,19 +1,19 @@
 module.exports = function (iris) {
     return {
         name: 'Kick Detect Color',
+        colorMode: 'HSV',
         start: function () {
             iris.BeatDetect.setSensitivity(250);
         },
-        update: function () {
+        update: function (leds) {
             if (iris.BeatDetect.isKick()) {
-        		var rgb = iris.HSVtoRGB( Math.random(), 1, 1 );
-        		for( var i = 0; i < iris.leds.length; i++ )
-        		{
-        			iris.leds[i][0] = rgb.r;
-        			iris.leds[i][1] = rgb.g;
-        			iris.leds[i][2] = rgb.b;
-        		}
-        	}
+                var hue = Math.random();
+                for (var i = 0; i < leds.length; i++) {
+                    leds[i] = [hue, 1, 1];
+                }
+            }
+
+            return leds;
         }
     };
 };
