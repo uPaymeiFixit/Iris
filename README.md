@@ -5,6 +5,7 @@ A Windows / Mac / Linux application to control an individually addressable RGB L
 
 * [Writing your first plugin](tutorials/writing-your-first-plugin.md)
 * [Modifier Plugins](tutorials/modifier-plugins.md)
+* [Working with HSV](tutorials/working-with-hsv.md)
 
 ## Plugin API References
 
