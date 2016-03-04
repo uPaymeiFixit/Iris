@@ -179,7 +179,15 @@ module.exports = {
             if (this.loadedPlugins[plugin] !== undefined) {
                 this.activatedPlugins.push(plugin);
                 if (module.exports.loadedPlugins[plugin].start) {
-                    module.exports.loadedPlugins[plugin].start();
+                    var leds;
+                    if (module.exports.loadedPlugins[plugin].colorSpace === 'RGB' || module.exports.loadedPlugins[plugin].colorSpace === undefined) {
+                        leds = RGBtoHSV(module.exports.loadedPlugins[plugin].start(HSVtoRGB(irisAPI.leds)));
+                    } else if (module.exports.loadedPlugins[plugin].colorSpace === 'HSV') {
+                        leds = module.exports.loadedPlugins[plugin].start(irisAPI.leds);
+                    }
+                    if (leds) {
+                        irisAPI.leds = leds;
+                    }
                 }
                 console.log('Loaded ' + plugin + ' plugin');
             } else {
