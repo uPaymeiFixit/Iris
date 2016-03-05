@@ -210,7 +210,7 @@ module.exports = {
     },
     deactivateBasePlugins: function () {
         for (var i in this.activatedPlugins) {
-            if (this.activatedPlugins[i].split('/').length > 1) {
+            if (this.activatedPlugins[i].split('/').length < 2) {
                 this.activatedPlugins.splice(i, 1);
             }
         }
