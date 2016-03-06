@@ -1,9 +1,9 @@
 var fs = require('fs.extra');
 var os = require('os');
 
-var irisAPI = require('./plugin_api');
-var serial;
 var GUI;
+var irisAPI;
+var serial;
 
 var RGBtoHSV = function (leds) {
     var converted = [];
@@ -33,6 +33,8 @@ module.exports = {
         console.log('Initializing plugins…');
         serial = _serial;
         GUI = _gui;
+        irisAPI = require('./plugin_api')(GUI);
+
         var NUM_LEDS = 17;
         irisAPI.leds = [];
         irisAPI.leds[NUM_LEDS - 1] = undefined;
