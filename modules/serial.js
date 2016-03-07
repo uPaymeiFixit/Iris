@@ -1,5 +1,5 @@
 var SerialPort = require('serialport').SerialPort;
-var pluginAPI = require('./plugin_api');
+var pluginAPI = require('./plugin_api')();
 var serial_port;
 var baudrate = 115200;
 var LEDbuffer;

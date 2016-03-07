@@ -134,7 +134,7 @@ module.exports = function (GUI) {
             }
         },
         GUI: {
-            dialog: GUI.dialog
+            dialog: (GUI ? GUI.dialog : undefined)
         }
     };
 };
