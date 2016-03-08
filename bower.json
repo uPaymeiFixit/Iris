@@ -1,0 +1,33 @@
+{
+  "name": "iris",
+  "description": "A Windows / Mac / Linux application to control an individually addressable RGB LED strip through an Arduino.",
+  "main": "main.js",
+  "authors": [
+    "Josh Gibbs <uPaymeiFixit@gmail.com>",
+    "Louis Orleans <louis@orleans.io>"
+  ],
+  "license": "GPL-2.0",
+  "keywords": [
+    "Arduino",
+    "RGB",
+    "LED",
+    "Serial",
+    "Hue",
+    "Case",
+    "Lights",
+    "PC"
+  ],
+  "homepage": "https://github.com/uPaymeiFixit/Iris",
+  "moduleType": [],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "./modules/resources/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.5.0"
+  }
+}

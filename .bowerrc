@@ -1,4 +1,4 @@
 {
-    "directory" : "./modules/pages/resources/bower_components",
+    "directory" : "./modules/resources/bower_components",
     "json" : "./bower.json"
 }

@@ -1,4 +1,13 @@
-<div style="display:flex; flex-direction:column;">
-    <label>{{question}}</label><input type="text" />
-    <input type="button" value="{{accept}}" />
-</div>
+<html ng-app="dialog">
+    <head>
+        <script type="text/javascript" src="../../bower_components/angular/angular.min.js"></script>
+        <script type="text/javascript" src="./script.js"></script>
+        <title></title>
+    </head>
+    <body ng-controller="DialogController">
+        <div style="display:flex; flex-direction:column;">
+            <label>{{question}}</label><input type="text" />
+            <input type="button" value="{{accept}}" />
+        </div>
+    </body>
+</html>
