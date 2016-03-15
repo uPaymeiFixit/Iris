@@ -16,7 +16,7 @@ var constrain = function (x, min, max) {
 module.exports = {
     init: function (callback) {
         console.log('Initializing the serial server…');
-        serial_port = new SerialPort('/dev/tty.usbmodem1481', {baudrate: baudrate}, false);
+        serial_port = new SerialPort('/dev/tty.usbserial-A6009P4D', {baudrate: baudrate}, false);
         if (callback) {
             callback();
         }

@@ -6,9 +6,7 @@ var bower;
 var jshint;
 var mocha;
 var sass;
-var autoprefixer;
 var concat;
-var request;
 var spawn = require('child_process').spawn;
 var mode = 'production';
 
@@ -36,12 +34,7 @@ gulp.task('test', function () {
     if (!mocha) {
         mocha = require('gulp-mocha');
     }
-    return gulp.src(['modules/test/*',
-                     'modules/pages/resources/scripts/shared/test/*',
-                     'modules/pages/resources/scripts/landing/test/*',
-                     'modules/pages/resources/scripts/locations/test/*',
-                     'modules/pages/resources/scripts/menu/test/*'
-                    ], {read: false})
+    return gulp.src(['modules/test/*'], {read: false})
         .pipe(mocha({
             growl: true,
             useColors: true
@@ -53,7 +46,7 @@ gulp.task('sass', function () {
     if (!sass) {
         sass = require('gulp-sass');
     }
-    return gulp.src('modules/pages/resources/styles/*.scss')
+    return gulp.src('modules/pages/resources/*/*.scss')
         .pipe(sass().on('error', function (err) {
             var msg = '';
             var lines = err.messageFormatted.split('\n');
@@ -72,55 +65,13 @@ gulp.task('sass', function () {
         .pipe(gulp.dest('modules/pages/resources/styles/dist'));
 });
 
-gulp.task('autoprefixer', function () {
-    if (!autoprefixer) {
-        autoprefixer = require('gulp-autoprefixer');
-    }
-    return gulp.src('modules/pages/resources/styles/dist/*.css')
-        .pipe(autoprefixer({
-            browsers: ['last 2 versions'],
-            cascade: false
-        }))
-        .pipe(gulp.dest('modules/pages/resources/styles/dist'));
-});
-
 gulp.task('scripts', function () {
     if (!concat) {
         concat = require('gulp-concat');
     }
-    // TODO add uglify back in once it works
-    // var uglify = require('gulp-uglify');
-    // var rename = require('gulp-rename');
-    // TODO seperate each view's scripts
-    // return gulp.src('pages/resources/scripts/*.js')
-    //     .pipe(concat('all.js'))
-    //     .pipe(gulp.dest('pages/resources/scripts/dist'))
-    //     .pipe(rename('all.min.js'))
-    //     .pipe(uglify())
-    //     .pipe(gulp.dest('pages/resources/scripts/dist'));
     return gulp.src(['modules/pages/resources/scripts/landing/*.js', 'modules/pages/resources/scripts/locations/*.js', 'modules/pages/resources/scripts/menu/*.js'])
         .pipe(concat('all.js'))
         .pipe(gulp.dest('modules/pages/resources/scripts/dist'));
-});
-
-gulp.task('node-server', function () {
-    if (main) {
-        main.stop();
-        main = undefined;
-        // release old main script
-        delete require.cache[require.resolve('./main')];
-    }
-    main = require('./main');
-    main.init(function () {
-        main.start();
-    });
-});
-
-gulp.task('reload-pages', function () {
-    if (!request) {
-        request = require('request');
-    }
-    request.post('http://localhost:8080/dev_api/reload_pages');
 });
 
 gulp.task('live-reload', function (file) {
@@ -163,20 +114,15 @@ gulp.task('electron-start', function () {
 });
 
 gulp.task('watch', function () {
-    gulp.watch(['modules/pages/resources/scripts/landing/*.js',
-                'modules/pages/resources/scripts/locations/*.js',
-                'modules/pages/resources/scripts/menu/*.js',
-                'modules/pages/resources/scripts/common/*.js'
-            ], ['scripts', 'live-reload']);
-    gulp.watch('modules/pages/resources/styles/*.scss', ['sass', 'live-reload']);
-    gulp.watch('modules/pages/*.html', ['reload-pages']);
-    // gulp.watch('modules/pages/parts/*/*.html', ['node-server']);
-    gulp.watch('main.js', ['node-server']);
-    gulp.watch('modules/*.js', ['node-server']);
+    gulp.watch(['modules/resources/pages/*/*.js'], ['scripts', 'live-reload']);
+    gulp.watch(['modules/resources/pages/*/*.scss'], ['sass', 'live-reload']);
+    gulp.watch(['modules/resources/pages/*/*.html'], ['reload-pages']);
+    gulp.watch(['modules/*.js'], ['run']);
+    gulp.watch('main.js', ['run']);
 });
 
 gulp.task('default', ['test', 'lint', 'sass', 'scripts']);
 gulp.task('build', ['sass', 'scripts']);
-gulp.task('run', ['node-server']);
+gulp.task('run', ['electron-start']);
 gulp.task('deploy', ['sass', 'scripts', 'run']);
 gulp.task('dev', ['set-dev', 'sass', 'run', 'watch']);
