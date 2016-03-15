@@ -85,12 +85,13 @@ gulp.task('live-reload', function (file) {
 });
 
 var electron;
+var electronPath = require('electron-prebuilt');
 gulp.task('electron-start', function () {
     if (electron) {
         electron.stdin.pause();
         electron.kill();
     }
-    electron = spawn('electron', ['./electron_start.js']);
+    electron = spawn(electronPath, ['./electron_start.js']);
     electron.stderr.on('data', function (data) {
         var date = new Date();
         var hours = date.getHours();
