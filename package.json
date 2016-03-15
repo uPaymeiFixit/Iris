@@ -42,5 +42,8 @@
     "gulp-sass": "^2.2.0",
     "node-notifier": "4.5.0",
     "serialport": "^2.0.6"
+  },
+  "devDependencies": {
+    "electron-prebuilt": "0.37.2"
   }
 }
