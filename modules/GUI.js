@@ -7,17 +7,18 @@ var tray;
 var trayMenu = [
     {label: 'Plugins', submenu: [
         {label: 'Open Plugins Folder…', click: function () {
-            switch (process.platform) {
-                case 'darwin':
-                    require('child_process').spawn('open', [os.homedir() + '/Library/Application\ Support/Iris/plugins']);
-                    break;
-                case 'linux':
-                    require('child_process').spawn('open', [os.homedir() + '/Application\ Data/Iris/plugins']);
-                    break;
-                case 'win32':
-                    require('child_process').spawn('explorer', [os.homedir() + '/"Application Data"/Local/Iris/plugins']);
-                    break;
-            }
+            // switch (process.platform) {
+            //     case 'darwin':
+            //         require('child_process').spawn('open', [os.homedir() + '/Library/Application\ Support/Iris/plugins']);
+            //         break;
+            //     case 'linux':
+            //         require('child_process').spawn('open', [os.homedir() + '/Application\ Data/Iris/plugins']);
+            //         break;
+            //     case 'win32':
+            //         require('child_process').spawn('explorer', [os.homedir() + '/"Application Data"/Local/Iris/plugins']);
+            //         break;
+            // }
+            electron.shell.showItemInFolder(`${os.homedir()}/Library/Application\ Support/Iris/plugins`);
         }},
         {label: 'Reload Plugins', click: function () {
             module.exports.clearPlugins();
