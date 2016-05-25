@@ -1,8 +1,11 @@
-.DS_Store
-certificates/**
+bin/*/
+*build-*
+
 **/logs/**
 **/node_modules/**
-**/bower_components/**
-modules/pages/resources/styles/dist/**
 
-modules/credentials.js
+# OS file
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
