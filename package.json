@@ -1,5 +1,6 @@
 {
   "name": "iris",
+  "productName": "Iris",
   "version": "0.0.1",
   "description": "A Windows / Mac / Linux application to control an individually addressable RGB LED strip through an Arduino.",
   "main": "main.js",
