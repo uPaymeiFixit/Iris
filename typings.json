@@ -1,0 +1,11 @@
+{
+  "dependencies": {},
+  "devDependencies": {},
+  "ambientDependencies": {
+    "es6-shim": "registry:dt/es6-shim#0.31.2+20160317120654",
+    "form-data": "registry:dt/form-data#0.0.0+20160316155526",
+    "kik-browser": "registry:dt/kik-browser#0.0.0+20160501161920",
+    "node": "registry:dt/node#4.0.0+20160505172921",
+    "request": "registry:dt/request#0.0.0+20160316155526"
+  }
+}

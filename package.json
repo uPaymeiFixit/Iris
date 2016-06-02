@@ -45,6 +45,9 @@
     "serialport": "^2.0.6"
   },
   "devDependencies": {
-    "electron-prebuilt": "0.37.2"
+    "electron-prebuilt": "0.37.2",
+    "gulp-typescript": "2.13.4",
+    "typescript": "1.8.10",
+    "typings": "1.0.4"
   }
 }
